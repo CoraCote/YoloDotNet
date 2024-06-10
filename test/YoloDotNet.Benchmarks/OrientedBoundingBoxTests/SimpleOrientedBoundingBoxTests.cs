@@ -16,8 +16,8 @@
     {
         #region Fields
 
-        private static string model = SharedConfig.GetTestModel(ModelType.ObbDetection);
-        private static string testImage = SharedConfig.GetTestImage(ImageType.Island);
+        private static string model = SharedConfig.GetTestModel(modelType: ModelType.ObbDetection);
+        private static string testImage = SharedConfig.GetTestImage(imageType: ImageType.Island);
 
         private Yolo cudaYolo;
         private Yolo cpuYolo;
@@ -32,19 +32,19 @@
         {
             this.cudaYolo = new Yolo(onnxModel: model, cuda: true);
             this.cpuYolo = new Yolo(onnxModel: model, cuda: false);
-            this.image = Image.Load<Rgba32>(testImage);
+            this.image = Image.Load<Rgba32>(path: testImage);
         }
 
         [Benchmark]
         public List<OBBDetection> RunSimpleObbDetectionGpu()
         {
-            return this.cudaYolo.RunObbDetection(this.image, 0.25, 0.45);
+            return this.cudaYolo.RunObbDetection(img: this.image, confidence: 0.25, iou: 0.45);
         }
 
         [Benchmark]
         public List<OBBDetection> RunSimpleObbDetectionCpu()
         {
-            return this.cpuYolo.RunObbDetection(this.image, 0.25, 0.45);
+            return this.cpuYolo.RunObbDetection(img: this.image, confidence: 0.25, iou: 0.45);
         }
 
         #endregion Methods

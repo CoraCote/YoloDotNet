@@ -16,8 +16,8 @@
     {
         #region Fields
 
-        private static string model = SharedConfig.GetTestModel(ModelType.Segmentation);
-        private static string testImage = SharedConfig.GetTestImage(ImageType.People);
+        private static string model = SharedConfig.GetTestModel(modelType: ModelType.Segmentation);
+        private static string testImage = SharedConfig.GetTestImage(imageType: ImageType.People);
 
         private Yolo cudaYolo;
         private Yolo cpuYolo;
@@ -32,19 +32,19 @@
         {
             this.cudaYolo = new Yolo(onnxModel: model, cuda: true);
             this.cpuYolo = new Yolo(onnxModel: model, cuda: false);
-            this.image = Image.Load<Rgba32>(testImage);
+            this.image = Image.Load<Rgba32>(path: testImage);
         }
 
         [Benchmark]
         public List<Segmentation> RunSimpleSegmentationGpu()
         {
-            return this.cudaYolo.RunSegmentation(this.image, 0.25, 0.45);
+            return this.cudaYolo.RunSegmentation(img: this.image, confidence: 0.25, iou: 0.45);
         }
 
         [Benchmark]
         public List<Segmentation> RunSimpleSegmentationCpu()
         {
-            return this.cpuYolo.RunSegmentation(this.image, 0.25, 0.45);
+            return this.cpuYolo.RunSegmentation(img: this.image, confidence: 0.25, iou: 0.45);
         }
 
         #endregion Methods
